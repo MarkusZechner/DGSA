@@ -40,8 +40,8 @@ for k=1:length(tgrid)
         C_i=C_reshaped(k,:,i+2);
         A_i=C_reshaped(k,:,1);
         B_i=C_reshaped(k,:,2);
-        S(i,k)=((A_i-mu_y_i)*(C_i-mu_y_i)')/sigma_y_i/(2*(N_unit_simul-1));        
-        S_t(i,k)=1-((C_i-mu_y_i)*(B_i-mu_y_i)')/sigma_y_i/(2*(N_unit_simul-1));
+        S(i,k)=((A_i-mu_y_i)*(C_i-mu_y_i)')/sigma_y_i/(N_unit_simul-1);        
+        S_t(i,k)=1-((C_i-mu_y_i)*(B_i-mu_y_i)')/sigma_y_i/(N_unit_simul-1);
                      
     end
       
