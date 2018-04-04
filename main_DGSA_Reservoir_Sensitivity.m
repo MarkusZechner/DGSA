@@ -21,6 +21,14 @@ DGSA=ProcessInputParameters('PriorParameters_Spatial.dat'); % This data includes
 DGSA.D=D;
 clear WWPTbyWell;clear D;
 
+%% Loading my own DGSA Matrix
+clear all; close all; fclose('all'); rng('default');
+addpath(genpath(pwd))
+
+load('C:\Users\Markus Zechner\Documents\GitHub\QUSS\data\evidential\DistanceM.mat','DGSA');
+
+
+
 %% 4. Compute & display main effects
 
 % 4.1 Inputs for clustering and display options.
