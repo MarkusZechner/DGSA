@@ -99,6 +99,7 @@ end
     end
     set(gca,'YTick',1:NbParams)
     set(gca,'YTickLabel',ParametersNames)
+    set(gcf,'color','w');
     plot([1 1], [0 NbParams+1],'m','LineWidth',3);
     box on; ylim([0 NbParams+1]);
     h3=colorbar; caxis([0 .1]);
