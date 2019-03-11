@@ -11,48 +11,22 @@ addpath(genpath(pwd))
 %% 1. Specify inputs for DGSA. 
 addpath(genpath(pwd))
 
-% Loading the BEL data struct
+% Loading the NPV information
+save_path = 'Y:/mzechner/Projects/BM/Code/Data/PolymerPilotWC_Matlab/';
 
-% History
-prior_path = 'Y:/mzechner/Projects/BM/Code/Data/BM_NFA_first/Prior_data_OilRate.mat';
-load(prior_path);
-
-% taking history out
-Data = Prior_Property_data.data(2:end,:); % we can keep the original ordering for history
-Time = Prior_Property_data.HistoricalTime;
-plot(Time,Data(1,:))
+FileName_dgsa = [save_path 'NPV_dGSA'];
+load(FileName_dgsa);
 
 
-%% eucledian distance
-DGSA.D = squareform(pdist(Data));
+
+DGSA.ParametersNames = ParameterNames_dgsa;
+DGSA.ParametersValues = ParameterMatrix_dgsa;
 
 
-%% delta time weighted euclidean distance (studio)
+DGSA.D = Distance_PP_FF;
 
- [ DM ] = ComputeWeightedEuclideanDistance( Data, Time );
+DGSA.N = size(ParameterMatrix_dgsa,1)
 
- DGSA.D = DM;
-
-%% reading the parameters
-
-parameter_path = 'Y:/mzechner/Projects/BM/Code/Data/Parameters_History_short.csv';
-
-Parameters = csvimport(parameter_path);
-
-DGSA.ParametersNames = Parameters(1,:);
-% removing the line with the names
-DGSA.ParametersValues = Parameters(2:end,:);
-
-% number of observations
-DGSA.N=size(DGSA.ParametersValues,1);
-
-% converting the geomodels to a number
-GeomodelsParam = grp2idx(DGSA.ParametersValues(:,1));
-
-% recombining the parameters (geomodels plus others)
-
-Params = cell2mat(DGSA.ParametersValues(:,2:end));
-DGSA.ParametersValues = [GeomodelsParam, Params];
 
 %% 4. Compute & display main effects
 

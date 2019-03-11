@@ -11,48 +11,39 @@ addpath(genpath(pwd))
 %% 1. Specify inputs for DGSA. 
 addpath(genpath(pwd))
 
-% Loading the BEL data struct
+% Loading the Priors
 
-% History
-prior_path = 'Y:/mzechner/Projects/BM/Code/Data/BM_NFA_first/Prior_data_OilRate.mat';
-load(prior_path);
+load('C:\Users\mzechner\Documents\GitHub\SequentialUpdate\Data_600Models\Prior_Rates.mat')
+load('C:\Users\mzechner\Documents\GitHub\SequentialUpdate\Data_600Models\PCA_Scores_spatial.mat')
+% Preparing the Names for 
+NumberOf_PCAcomponents = 10;
+NamesOfProperties = {'Poro','Perm','Sat'};
 
-% taking history out
-Data = Prior_Property_data.data(2:end,:); % we can keep the original ordering for history
-Time = Prior_Property_data.HistoricalTime;
-plot(Time,Data(1,:))
+PCAcompNames = {};
+k = 1;
+for i=1:size(NamesOfProperties,2)
+    
+    
+    for ii=1:NumberOf_PCAcomponents
+        
+        PCAcompNames{k} = [NamesOfProperties{i} '_' num2str(ii)];
+        
+        k = k +1;
+        
+        end
+end
+DGSA.ParametersNames = PCAcompNames;
 
 
-%% eucledian distance
-DGSA.D = squareform(pdist(Data));
+% combining the scores
+DGSA.ParametersValues = [prior_poro_pca_scores(:,1:NumberOf_PCAcomponents), ...
+    prior_perm_pca_scores(:,1:NumberOf_PCAcomponents),... 
+    prior_sat_pca_scores(:,1:NumberOf_PCAcomponents)];
 
+DGSA.D = squareform(pdist(prior_oil_rate));
 
-%% delta time weighted euclidean distance (studio)
+DGSA.N = size(DGSA.D,1)
 
- [ DM ] = ComputeWeightedEuclideanDistance( Data, Time );
-
- DGSA.D = DM;
-
-%% reading the parameters
-
-parameter_path = 'Y:/mzechner/Projects/BM/Code/Data/Parameters_History_short.csv';
-
-Parameters = csvimport(parameter_path);
-
-DGSA.ParametersNames = Parameters(1,:);
-% removing the line with the names
-DGSA.ParametersValues = Parameters(2:end,:);
-
-% number of observations
-DGSA.N=size(DGSA.ParametersValues,1);
-
-% converting the geomodels to a number
-GeomodelsParam = grp2idx(DGSA.ParametersValues(:,1));
-
-% recombining the parameters (geomodels plus others)
-
-Params = cell2mat(DGSA.ParametersValues(:,2:end));
-DGSA.ParametersValues = [GeomodelsParam, Params];
 
 %% 4. Compute & display main effects
 
